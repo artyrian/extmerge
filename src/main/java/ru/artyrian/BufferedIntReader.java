@@ -12,7 +12,6 @@ public class BufferedIntReader {
 
 	public BufferedIntReader(File file) throws FileNotFoundException {
 		scanner = new Scanner(file);
-		scanner.useDelimiter(";");
 	}
 
 	public boolean hasNext() {
