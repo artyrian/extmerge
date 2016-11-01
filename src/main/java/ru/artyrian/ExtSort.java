@@ -8,30 +8,33 @@ import java.util.Scanner;
 
 public class ExtSort {
 
+
     public static void main(String[] args) {
-        ExtSort.sort("resources/example1.csv", "resources/result.csv", 3);
+        final int SWAP_LINES = 3;
+
+        ExtSort.sort("resources/example1.csv", "resources/result.csv", SWAP_LINES);
     }
 
-    public static void sort(final String pathInput, final String pathOutput, final int sizeLengthSplit) {
+    public static void sort(final String pathInput, final String pathOutput, final int swapLinesSize) {
         try (Scanner scanner = new Scanner(new File(pathInput));
              PrintWriter fileOut = new PrintWriter(pathOutput))
         {
             fileOut.write(scanner.nextLine().concat("\n"));   // write header
 
-            List<BufferedIntReader> bufferedReaders = buildSwapFiles(scanner, sizeLengthSplit);
+            List<BufferedIntReader> bufferedReaders = buildSwapFiles(scanner, swapLinesSize);
             writeMerge(bufferedReaders, fileOut);
         } catch (IOException e) {
             System.err.println("some IOException on write result to file.");
         }
     }
 
-    // read to tmp sorted files wrapped into buffer int readers
-    private static List<BufferedIntReader> buildSwapFiles(final Scanner scanner, final int lenSplit) throws IOException {
+    // write to swap files wrapped into bufferIntReader sorted values
+    private static List<BufferedIntReader> buildSwapFiles(final Scanner scanner, final int swapLinesSize) throws IOException {
         List<BufferedIntReader> result = new ArrayList<>();
 
         List<Item> items = new ArrayList<>();
         while (true) {
-            if (items.size() == lenSplit || !scanner.hasNextLine() ) {
+            if (items.size() == swapLinesSize || !scanner.hasNextLine() ) {
                 Collections.sort(items, (t1, t2) -> t1.getFid() - t2.getFid());
                 File swap = writeToSwap(items);
                 result.add(new BufferedIntReader(swap));
@@ -47,6 +50,11 @@ public class ExtSort {
 
             String line = scanner.nextLine();
             items.add(new Item(line));
+        }
+
+        final int bufferedLinesSize = swapLinesSize / result.size();
+        for (BufferedIntReader br : result) {
+            br.setQueueSize(bufferedLinesSize);
         }
 
         return result;

@@ -2,26 +2,39 @@ package ru.artyrian;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 public class BufferedIntReader {
 	private final Scanner scanner;
 
-	public BufferedIntReader(File file) throws FileNotFoundException {
+	private Deque<String> queue;
+	private int queueSize;
+
+	BufferedIntReader(File file) throws FileNotFoundException {
 		scanner = new Scanner(file);
+		queue = new LinkedList<>();
 	}
 
-	public boolean hasNext() {
-		return scanner.hasNextLine();
+	void setQueueSize(final int queueSize) {
+		this.queueSize = queueSize;
 	}
 
-	public Item next() {
-		if (!hasNext()) {
-			return null;
+	boolean hasNext() {
+		return !queue.isEmpty() || scanner.hasNext();
+	}
+
+	Item next() {
+		if (queue.isEmpty()) {
+			int i = 0;
+			while (i <= queueSize && scanner.hasNextLine()) {
+				queue.add(scanner.nextLine());
+				i++;
+			}
 		}
 
-		String line = scanner.nextLine();
-		return new Item(line);
+		return hasNext() ? new Item(queue.removeFirst()) : null;
 	}
 
 }
