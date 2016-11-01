@@ -4,9 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-/**
- * Created by artyrian on 11/1/16.
- */
 public class BufferedIntReader {
 	private final Scanner scanner;
 

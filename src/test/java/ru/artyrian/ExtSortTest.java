@@ -22,7 +22,7 @@ public class ExtSortTest {
 
 	@Test
 	public void testSorted() {
-		Assert.assertTrue(ifFileSorted("/resources/sorted.csv"));
+		Assert.assertTrue(ifFileSorted("resources/sorted.csv"));
 	}
 
 	@Test
